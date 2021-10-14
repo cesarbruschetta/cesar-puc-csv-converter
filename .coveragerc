@@ -1,0 +1,15 @@
+[run]
+source =
+    cesar_puc_csv_converter
+omit =
+    */.local/*
+    /usr/*
+    */test_*.py
+    *conftest.py
+    */.virtualenvs/*
+    *bin*
+    cesar_puc_csv_converter/__init__.py
+
+[report]
+show_missing = True
+skip_covered =  True
