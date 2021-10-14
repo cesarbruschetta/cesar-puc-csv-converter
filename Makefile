@@ -1,12 +1,6 @@
 export PYTHONPATH = .
 export MYPYPATH = ./stubs
 
-# SET .env and override default envs
-ifneq (,$(wildcard ./.env))
-    include .env
-	export $(shell sed 's/=.*//' .env)
-endif
-
 .PHONY: help
 
 help:  ## This help

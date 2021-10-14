@@ -1,23 +1,21 @@
 all-tests: ## Runs all tests
-	@poetry run coverage run -p -m pytest -xvv cog_platform --disable-warnings --import-mode=importlib
+	@poetry run coverage run -p -m pytest -xvv cesar_puc_csv_converter --disable-warnings --import-mode=importlib
 
 tests: ## Runs unit tests
 	@make tests-matching-cov && \
 	make coverage
 
 define run-tests-matching
-@DJANGO_SETTINGS_MODULE=cog_platform.settings_test \
-poetry run pytest -xvv cog_platform -k "$(k)" $(1) \
+poetry run pytest -xvv cesar_puc_csv_converter -k "$(k)" $(1) \
 --ignore="$(i)" \
---disable-warnings \
---import-mode=importlib
+--disable-warnings
 endef
 
 tests-matching: ## Runs tests matching a patter with the 'k' parameter
 	$(call run-tests-matching)
 
 tests-matching-cov: ## Runs tests matching a patter with the 'k' parameter with coverage
-	$(call run-tests-matching,--cov=cog_platform --no-cov-on-fail --cov-report=)
+	$(call run-tests-matching,--cov=cesar_puc_csv_converter --no-cov-on-fail --cov-report=)
 
 coverage: ## Runs the coverage command
 	@echo "Running coverage..." && \
