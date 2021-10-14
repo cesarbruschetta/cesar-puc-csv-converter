@@ -13,14 +13,20 @@ Leia um arquivo **csv** ou uma **pasta** com csv's e converta-os em **JSON**.
 Este projeto é um programa em execução no terminal, de preferência instalado com pipx:
 
 
-`` `bash
-pipx install clebs-puc-csv-converter
-`` `
+```bash
+$ pipx install clebs-puc-csv-converter
+```
 
 Para usar, basta digitar:
 
-`` `bash
-csv_converter --help
-`` `
+```bash
+$ csv_converter --help
+```
 
 Isso listará todas as opções disponíveis.
+
+### Informações para desenvolvimento 
+
+* [Ambiente de Desenvolvimento](./development/environment.md)
+* [Pré-requisitos do Sistema](./development/pre-requisitos.md)
+* [Rodando os Testes](./development/testes.md)
