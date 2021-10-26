@@ -38,7 +38,7 @@ ifneq ($(v), patch)
 endif
 endif
 endif
-	@git checkout master && git pull
+	@git checkout main && git pull
 	@poetry run bumpversion $(v) --dry-run --no-commit --list | grep new_version= | sed -e 's/new_version=//' | xargs -n 1 poetry run towncrier --yes --version
 	@git commit -am 'Update CHANGELOG'
 	@poetry run bumpversion $(v)

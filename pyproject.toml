@@ -17,7 +17,7 @@
     skip-string-normalization = '1'
 
 [tool.towncrier]
-    package = 'cesar-puc-csv-converter'
+    package = 'cesar_puc_csv_converter'
     package_dir = ''
     filename = 'CHANGELOG.md'
     title_format =  '{version} ({project_date})'
