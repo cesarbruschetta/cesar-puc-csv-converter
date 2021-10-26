@@ -1,14 +1,22 @@
+import csv
+import json
 import logging
 from pathlib import Path
-from typing import Any, Tuple
-
-import pandas as pd
+from typing import Any, Dict, List, Tuple
 
 
 logger = logging.getLogger(__name__)
 
 
-def read_csv_file(source: Path, delimiter: str) -> Tuple[Any, ...]:
+def _load_csv_file(filepath: Path, delimiter: str) -> List[Dict[str, Any]]:
+    with open(filepath, newline='') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=delimiter)
+        return list(reader)
+
+
+def read_csv_file(
+    source: Path, delimiter: str
+) -> Tuple[List[Dict[str, Any]], ...]:
     """Load csv files from disk.
 
     Args:
@@ -16,22 +24,16 @@ def read_csv_file(source: Path, delimiter: str) -> Tuple[Any, ...]:
         delimiter (str): Separator for columns in csv.
 
     Return:
-        tuple: tuple of DataFrames.
+        tuple: tuple of list of dicts.
     """
     if source.is_file():
         logger.info("Reading single file %s", source)
-        return (
-            pd.read_csv(
-                filepath_or_buffer=source, delimiter=delimiter, index_col=False
-            ),
-        )
+        return (_load_csv_file(filepath=source, delimiter=delimiter),)
 
     logger.info("Reading all files within subdirectory %s", source)
     data = tuple(
         [
-            pd.read_csv(
-                filepath_or_buffer=name, delimiter=delimiter, index_col=False
-            )
+            _load_csv_file(filepath=name, delimiter=delimiter)
             for name in source.iterdir()
         ]
     )
@@ -39,12 +41,14 @@ def read_csv_file(source: Path, delimiter: str) -> Tuple[Any, ...]:
 
 
 def save_to_json_files(
-    csvs: Tuple[Any, ...], output_path: Path, prefix: str = 'file'
+    csvs: Tuple[List[Dict[str, Any]], ...],
+    output_path: Path,
+    prefix: str = 'file',
 ) -> None:
-    """Save dataframes to Disk.
+    """Save datas to Disk.
 
     Args:
-        csvs (tuple): Tuple with dataframes that will be converted
+        csvs (tuple): Tuple with list of dicts that will be converted
         output_path (Path): Path where to save the json files
         file_names (str): Name of files. If nothing is given it will
     """
@@ -53,10 +57,10 @@ def save_to_json_files(
         file_name = f"{prefix}_{i}.json"
         logger.info("Saving file %s in folder %s", file_name, output_path)
 
-        data: pd.DataFrame = csvs[i]
-        data.to_json(
-            path_or_buf=output_path.joinpath(file_name),
-            orient="records",
-            indent=4,
+        data: List[Dict[str, Any]] = csvs[i]
+        json.dump(data, open(output_path.joinpath(file_name), 'w'), indent=4)
+        i += 1
+
+
         )
         i += 1
