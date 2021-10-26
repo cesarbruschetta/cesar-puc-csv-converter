@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from .converter import read_csv_file, save_to_json_files
+from .converter import read_csv_file, read_json_file, save_to_json_files
 
 
 logging.basicConfig(
@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 @click.command()
+@click.argument("type-module", type=click.Choice(['csv', 'json']))
 @click.option(
     "--input",
     "-i",
-    default="./",
     help="Path where the files will be loaded for conversion.",
     type=str,
 )
@@ -32,8 +32,8 @@ logger = logging.getLogger(__name__)
     "--delimiter",
     "-d",
     default=",",
+    type=click.Choice([',', ';', '|']),
     help="Separator used to split the files.",
-    type=str,
 )
 @click.option(
     "--prefix",
@@ -47,12 +47,16 @@ logger = logging.getLogger(__name__)
     ),
 )
 def converter(
-    input: str = "./",
+    type_module: str,
+    input: str,
     output: str = "./",
     delimiter: str = ",",
     prefix: str = 'file',
 ) -> None:
-    """Convert Single file or list of CSV files to json."""
+    """
+    Convert Single file or list of CSV files to json
+    or json to convert json files to csv.
+    """
 
     input_path = Path(input)
     output_path = Path(output)
@@ -63,7 +67,11 @@ def converter(
         if not (p.is_file() or p.is_dir()):
             raise TypeError(f"Not a valid path or file name. {p}")
 
-    data = read_csv_file(source=input_path, delimiter=delimiter)
-    save_to_json_files(data, output_path, prefix)
+    if type_module == 'csv':
+        data = read_csv_file(source=input_path, delimiter=delimiter)
+        save_to_json_files(data, output_path, prefix)
+    elif type_module == 'json':
+        data = read_json_file(source=input_path)
+        save_to_json_files(data, output_path, prefix)
 
     logger.info("Finishing processing")

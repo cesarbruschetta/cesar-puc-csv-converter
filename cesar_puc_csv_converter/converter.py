@@ -40,6 +40,24 @@ def read_csv_file(
     return data
 
 
+def read_json_file(source: Path) -> Tuple[List[Dict[str, Any]], ...]:
+    """Load json files from disk.
+
+    Args:
+        source (Path): Path of a single json file or a directory containing json files.
+
+    Return:
+        tuple: tuple of list of dicts.
+    """
+    if source.is_file():
+        logger.info("Reading single file %s", source)
+        return (json.load(open(source)),)
+
+    logger.info("Reading all files within subdirectory %s", source)
+    data = tuple([json.load(open(name)) for name in source.iterdir()])
+    return data
+
+
 def save_to_json_files(
     csvs: Tuple[List[Dict[str, Any]], ...],
     output_path: Path,
@@ -62,5 +80,28 @@ def save_to_json_files(
         i += 1
 
 
-        )
+def save_to_csv_files(
+    jsons: Tuple[List[Dict[str, Any]], ...],
+    output_path: Path,
+    prefix: str = 'file',
+) -> None:
+    """Save datas to Disk.
+
+    Args:
+        jsons (tuple): Tuple with list of dicts that will be converted
+        output_path (Path): Path where to save the json files
+        file_names (str): Name of files. If nothing is given it will
+    """
+    i = 0
+    while i < len(jsons):
+        file_name = f"{prefix}_{i}.csv"
+        logger.info("Saving file %s in folder %s", file_name, output_path)
+
+        data: List[Dict[str, Any]] = jsons[i]
+        with open(file_name, 'w', newline='') as csvfile:
+            fieldnames = data[0].keys()
+            writer: csv.DictWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)  # type: ignore
+            writer.writeheader()
+            (writer.writerow(item) for item in data)
+
         i += 1
