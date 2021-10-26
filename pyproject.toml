@@ -72,7 +72,7 @@
 
 [tool.poetry]
     name = "cesar-puc-csv-converter"
-    version = "0.1.0"
+    version = "0.2.0"
     description = "Convert csv to json. Publishing only for learning purposes at PUC."
     authors = ["Cesar Augusto <cesarabruschetta@gmail.com>"]
     readme = "README.md"
