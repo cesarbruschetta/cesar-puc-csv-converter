@@ -84,6 +84,7 @@ def save_to_csv_files(
     jsons: Tuple[List[Dict[str, Any]], ...],
     output_path: Path,
     prefix: str = 'file',
+    delimiter: str = ',',
 ) -> None:
     """Save datas to Disk.
 
@@ -98,10 +99,11 @@ def save_to_csv_files(
         logger.info("Saving file %s in folder %s", file_name, output_path)
 
         data: List[Dict[str, Any]] = jsons[i]
-        with open(file_name, 'w', newline='') as csvfile:
+        with open(output_path.joinpath(file_name), 'w') as csvfile:
             fieldnames = data[0].keys()
-            writer: csv.DictWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)  # type: ignore
+            writer: csv.DictWriter = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)  # type: ignore
             writer.writeheader()
-            (writer.writerow(item) for item in data)
+            for item in data:
+                writer.writerow(item)
 
         i += 1

@@ -3,7 +3,12 @@ from pathlib import Path
 
 import click
 
-from .converter import read_csv_file, read_json_file, save_to_json_files
+from .converter import (
+    read_csv_file,
+    read_json_file,
+    save_to_csv_files,
+    save_to_json_files,
+)
 
 
 logging.basicConfig(
@@ -32,7 +37,7 @@ logger = logging.getLogger(__name__)
     "--delimiter",
     "-d",
     default=",",
-    type=click.Choice([',', ';', '|']),
+    type=click.Choice([',', ';', ':', '\t']),
     help="Separator used to split the files.",
 )
 @click.option(
@@ -72,6 +77,6 @@ def converter(
         save_to_json_files(data, output_path, prefix)
     elif type_module == 'json':
         data = read_json_file(source=input_path)
-        save_to_json_files(data, output_path, prefix)
+        save_to_csv_files(data, output_path, prefix, delimiter)
 
     logger.info("Finishing processing")
